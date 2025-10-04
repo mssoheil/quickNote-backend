@@ -8,6 +8,4 @@ config();
 const PORT = get("PORT").required().example("5000").asString();
 const DATABASE_URL = get("DATABASE_URL").required().example("file:./prisma/dev.db").asString();
 
-const envLoader: EnvLoader = { PORT, DATABASE_URL };
-
-export default envLoader;
+export const envLoader: EnvLoader = { PORT, DATABASE_URL };

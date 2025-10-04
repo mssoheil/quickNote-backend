@@ -2,11 +2,12 @@
   "name": "quicknote-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon",
-    "build": "tsc",
-    "start": "node dist/index.js"
+     "prepare": "prisma generate",                   
+    "dev": "nodemon",                                 
+    "build": "tsc && prisma generate",                
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -19,12 +20,15 @@
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "morgan": "^1.10.0",
+    "pino": "^10.0.0",
+    "pino-pretty": "^13.1.1",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.29",
     "@types/supertest": "^6.0.3",
+    "eslint-config-prettier": "^10.1.8",
     "nodemon": "^3.1.10",
     "prisma": "^6.8.2",
     "supertest": "^7.1.1",
