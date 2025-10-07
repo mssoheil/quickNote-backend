@@ -1,6 +1,46 @@
+import express from "express";
+import cors from "cors";
+import { envLoader } from "./configs";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
 
-import express from "express"
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 50,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+});
 
 const app = express();
 
-export default app
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || envLoader.ALLOWED_ORIGINS.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not Allowed origin"));
+      }
+    },
+  })
+);
+
+app.use(helmet());
+
+app.disable("x-powered-by");
+
+app.use(limiter);
+
+app.use(
+  express.json({
+    limit: "1mb",
+    strict: true,
+    inflate: true,
+    type: "application/json",
+  })
+);
+
+app.use(express.urlencoded({ extended: false, limit: "1mb" }));
+
+export default app;
