@@ -1,7 +1,8 @@
-import express from "express";
 import cors from "cors";
-import { envLoader } from "./configs";
 import helmet from "helmet";
+import express from "express";
+import { envLoader } from "./configs";
+import authRoutes from "./modules/auth";
 import { rateLimit } from "express-rate-limit";
 
 const limiter = rateLimit({
@@ -42,5 +43,7 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false, limit: "1mb" }));
+
+app.use("/auth", authRoutes);
 
 export default app;

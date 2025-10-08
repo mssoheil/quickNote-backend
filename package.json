@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "prisma generate",
     "dev": "nodemon",
-    "build": "tsc && prisma generate",
+    "build": "tsc && prisma generate && tsc-alias",
     "start": "node dist/server.js"
   },
   "keywords": [],
@@ -14,6 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.8.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "env-var": "^7.5.0",
@@ -35,6 +37,8 @@
     "prisma": "^6.8.2",
     "supertest": "^7.1.1",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3",
     "vitest": "^3.1.4"
   }
