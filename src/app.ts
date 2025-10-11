@@ -4,6 +4,8 @@ import express from "express";
 import { envLoader } from "./configs";
 import authRoutes from "./modules/auth";
 import { rateLimit } from "express-rate-limit";
+import { buildSwaggerSpec } from "./swagger";
+import swaggerUi from "swagger-ui-express";
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
@@ -14,6 +16,11 @@ const limiter = rateLimit({
 });
 
 const app = express();
+
+(async () => {
+  const spec = await buildSwaggerSpec();
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
+})();
 
 app.use(
   cors({
