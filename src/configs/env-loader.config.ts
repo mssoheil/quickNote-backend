@@ -14,5 +14,13 @@ const ALLOWED_ORIGINS = get("ALLOWED_ORIGINS")
   .required()
   .example("http://localhost")
   .asArray(",");
+const JWT_SECRET = get("JWT_SECRET").required().asString();
+const SALT_ROUND = get("SALT_ROUND").required().asInt();
 
-export const envLoader: EnvLoader = { PORT, DATABASE_URL, ALLOWED_ORIGINS };
+export const envLoader: EnvLoader = {
+  PORT,
+  JWT_SECRET,
+  SALT_ROUND,
+  DATABASE_URL,
+  ALLOWED_ORIGINS,
+};

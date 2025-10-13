@@ -7,13 +7,16 @@
     "prepare": "prisma generate",
     "dev": "nodemon",
     "build": "tsc && prisma generate && tsc-alias",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "db:push": "prisma db push",
+    "db:view": "prisma studio"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.8.2",
+    "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "class-validator-jsonschema": "^5.1.0",
@@ -23,21 +26,27 @@
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
     "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "pino": "^10.0.0",
     "pino-pretty": "^13.1.1",
     "reflect-metadata": "^0.2.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "uuid": "^13.0.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/bcryptjs": "^3.0.0",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.2",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.29",
     "@types/supertest": "^6.0.3",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "@types/uuid": "^11.0.0",
     "eslint-config-prettier": "^10.1.8",
     "nodemon": "^3.1.10",
     "prisma": "^6.8.2",
@@ -45,7 +54,7 @@
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.3",
     "vitest": "^3.1.4"
   }
 }
