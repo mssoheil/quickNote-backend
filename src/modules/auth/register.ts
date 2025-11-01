@@ -1,7 +1,8 @@
-import { createUser, findOneUser } from "@root/repository/auth.repository";
+import { Request, Response } from "express";
 import { hashPassword } from "@root/utils/hash.util";
 import { generateToken } from "@root/utils/token.util";
-import { Request, Response } from "express";
+import { cookieOptions } from "@root/constants/cookie";
+import { createUser, findOneUser } from "@root/repository/auth.repository";
 
 export const registerController = async (
   request: Request,
@@ -31,5 +32,7 @@ export const registerController = async (
 
   const token = generateToken(createdUser);
 
-  response.status(200).send({ token });
+  response.cookie("authcookie", token, cookieOptions);
+
+  response.status(200).send({ message: "user created" });
 };

@@ -16,11 +16,13 @@ const ALLOWED_ORIGINS = get("ALLOWED_ORIGINS")
   .asArray(",");
 const JWT_SECRET = get("JWT_SECRET").required().asString();
 const SALT_ROUND = get("SALT_ROUND").required().asInt();
+const COOKIE_MAX_AGE = get("COOKIE_MAX_AGE").required().asInt();
 
 export const envLoader: EnvLoader = {
   PORT,
   JWT_SECRET,
   SALT_ROUND,
   DATABASE_URL,
+  COOKIE_MAX_AGE,
   ALLOWED_ORIGINS,
 };

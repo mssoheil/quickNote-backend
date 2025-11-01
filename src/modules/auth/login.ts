@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { cookieOptions } from "@root/constants/cookie";
 import { generateToken } from "@root/utils/token.util";
 import { comparePassword } from "@root/utils/hash.util";
 import { findOneUser } from "@root/repository/auth.repository";
@@ -36,5 +37,6 @@ export const loginController = async (request: Request, response: Response) => {
     updatedAt: user.updatedAt,
   });
 
-  response.status(200).send({ token });
+  response.cookie("authcookie", token, cookieOptions);
+  response.json({ message: "Logged in" });
 };
