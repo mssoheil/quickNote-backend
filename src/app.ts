@@ -51,6 +51,12 @@ app.use(
 
 app.use(express.urlencoded({ extended: false, limit: "1mb" }));
 
-app.use("/auth", authRoutes);
+app.use(
+  "/api",
+  ((router) => {
+    router.use("/auth", authRoutes);
+    return router;
+  })(express.Router())
+);
 
 export default app;

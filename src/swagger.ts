@@ -16,6 +16,7 @@ export async function buildSwaggerSpec() {
       openapi: "3.0.0",
       info: { title: "QuickNote", version: "1.0.0" },
       components: { schemas },
+      servers: [{ url: "/api", description: "App base" }],
     },
     apis: [
       "src/routes/**/*.ts",
