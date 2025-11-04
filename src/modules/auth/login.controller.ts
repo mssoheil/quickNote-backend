@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
+// Constants
 import { cookieOptions } from "@root/constants/cookie";
+// Utils
 import { generateToken } from "@root/utils/token.util";
 import { comparePassword } from "@root/utils/hash.util";
+// Repositories
 import { findOneUser } from "@root/repository/auth.repository";
 
 function userNotFoundException(response: Response) {

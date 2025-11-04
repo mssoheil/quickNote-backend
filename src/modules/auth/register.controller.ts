@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
+// Utils
 import { hashPassword } from "@root/utils/hash.util";
 import { generateToken } from "@root/utils/token.util";
+// Constants
 import { cookieOptions } from "@root/constants/cookie";
+// Repositories
 import { createUser, findOneUser } from "@root/repository/auth.repository";
 
 export const registerController = async (

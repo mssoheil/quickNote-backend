@@ -1,9 +1,12 @@
 import { Router } from "express";
-import { registerController } from "./register";
+// Middlewares
 import { validateBody } from "@root/middlewares/validate-body.middleware";
-import { RegisterUserRequestDto } from "./dto/register-user-request.dto";
-import { loginController } from "./login";
+// Controllers
+import { loginController } from "./login.controller";
+import { registerController } from "./register.controller";
+// DTOs
 import { LoginRequestDto } from "./dto/login-request.dto";
+import { RegisterUserRequestDto } from "./dto/register-user-request.dto";
 
 const router = Router();
 
@@ -42,7 +45,6 @@ const router = Router();
  *                   path: "/auth/register"
  *                   message: "Invalid payload"
  */
-
 router.post(
   "/register",
   validateBody(RegisterUserRequestDto),
@@ -84,7 +86,6 @@ router.post(
  *                   path: "/auth/login"
  *                   message: "Invalid payload"
  */
-
 router.post("/login", validateBody(LoginRequestDto), loginController);
 
 export default router;
