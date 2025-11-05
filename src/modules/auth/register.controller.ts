@@ -6,12 +6,14 @@ import { generateRefreshToken, generateToken } from "@root/utils/token.util";
 import { cookieLongOptions, cookieOptions } from "@root/constants/cookie";
 // Repositories
 import { createUser, findOneUser } from "@root/repository/auth.repository";
+// DTOs
+import { RegisterUserRequestDto } from "@root/modules/auth/dto/register-user-request.dto";
 
 export const registerController = async (
   request: Request,
   response: Response
 ) => {
-  const body = request.body ?? {};
+  const body: RegisterUserRequestDto = request.body ?? {};
   const { password, ...payload } = body;
 
   const user = await findOneUser({
@@ -28,16 +30,18 @@ export const registerController = async (
 
   const hashedPassword = await hashPassword(password);
 
-  const createdUser = await createUser({
+  const userData = {
     ...payload,
     password: hashedPassword,
-  });
+  };
+
+  const createdUser = await createUser(userData);
 
   const token = generateToken(createdUser);
   const refreshToken = generateRefreshToken(createUser);
 
   response.cookie("accesscookie", token, cookieOptions);
-  response.cookie("refreshcookie", token, cookieLongOptions);
+  response.cookie("refreshcookie", refreshToken, cookieLongOptions);
 
   response.status(200).send({ message: "user created" });
 };
