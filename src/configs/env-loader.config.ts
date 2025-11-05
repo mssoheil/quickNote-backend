@@ -15,8 +15,10 @@ const ALLOWED_ORIGINS = get("ALLOWED_ORIGINS")
   .example("http://localhost")
   .asArray(",");
 const JWT_SECRET = get("JWT_SECRET").required().asString();
+const JWT_REFRESH_SECRET = get("JWT_REFRESH_SECRET").required().asString();
 const SALT_ROUND = get("SALT_ROUND").required().asInt();
 const COOKIE_MAX_AGE = get("COOKIE_MAX_AGE").required().asInt();
+const COOKIE_LONG_MAX_AGE = get("COOKIE_LONG_MAX_AGE").required().asInt();
 
 export const envLoader: EnvLoader = {
   PORT,
@@ -25,4 +27,6 @@ export const envLoader: EnvLoader = {
   DATABASE_URL,
   COOKIE_MAX_AGE,
   ALLOWED_ORIGINS,
+  JWT_REFRESH_SECRET,
+  COOKIE_LONG_MAX_AGE,
 };

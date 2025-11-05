@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 // Constants
-import { cookieOptions } from "@root/constants/cookie";
+import { cookieLongOptions, cookieOptions } from "@root/constants/cookie";
 // Utils
 import { generateToken } from "@root/utils/token.util";
 import { comparePassword } from "@root/utils/hash.util";
@@ -40,6 +40,8 @@ export const loginController = async (request: Request, response: Response) => {
     updatedAt: user.updatedAt,
   });
 
-  response.cookie("authcookie", token, cookieOptions);
+  response.cookie("accesscookie", token, cookieOptions);
+  response.cookie("refreshcookie", token, cookieLongOptions);
+
   response.json({ message: "Logged in" });
 };

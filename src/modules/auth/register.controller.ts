@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 // Utils
 import { hashPassword } from "@root/utils/hash.util";
-import { generateToken } from "@root/utils/token.util";
+import { generateRefreshToken, generateToken } from "@root/utils/token.util";
 // Constants
-import { cookieOptions } from "@root/constants/cookie";
+import { cookieLongOptions, cookieOptions } from "@root/constants/cookie";
 // Repositories
 import { createUser, findOneUser } from "@root/repository/auth.repository";
 
@@ -34,8 +34,10 @@ export const registerController = async (
   });
 
   const token = generateToken(createdUser);
+  const refreshToken = generateRefreshToken(createUser);
 
-  response.cookie("authcookie", token, cookieOptions);
+  response.cookie("accesscookie", token, cookieOptions);
+  response.cookie("refreshcookie", token, cookieLongOptions);
 
   response.status(200).send({ message: "user created" });
 };
