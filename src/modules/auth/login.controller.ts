@@ -40,8 +40,8 @@ export const loginController = async (request: Request, response: Response) => {
     updatedAt: user.updatedAt,
   });
 
-  response.cookie("accesscookie", token, cookieOptions);
-  response.cookie("refreshcookie", token, cookieLongOptions);
+  response.cookie("access_token", token, cookieOptions);
+  response.cookie("refresh_token", token, cookieLongOptions);
 
   response.json({ message: "Logged in" });
 };

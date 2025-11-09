@@ -40,8 +40,8 @@ export const registerController = async (
   const token = generateToken(createdUser);
   const refreshToken = generateRefreshToken(createUser);
 
-  response.cookie("accesscookie", token, cookieOptions);
-  response.cookie("refreshcookie", refreshToken, cookieLongOptions);
+  response.cookie("access_token", token, cookieOptions);
+  response.cookie("refresh_token", refreshToken, cookieLongOptions);
 
   response.status(200).send({ message: "user created" });
 };

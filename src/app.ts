@@ -6,6 +6,7 @@ import authRoutes from "./modules/auth";
 import { rateLimit } from "express-rate-limit";
 import { buildSwaggerSpec } from "./swagger";
 import swaggerUi from "swagger-ui-express";
+import cookieParser from "cookie-parser";
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
@@ -33,6 +34,8 @@ app.use(
     },
   })
 );
+
+app.use(cookieParser());
 
 app.use(helmet());
 
