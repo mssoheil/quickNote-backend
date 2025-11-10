@@ -37,8 +37,14 @@ export const registerController = async (
 
   const createdUser = await createUser(userData);
 
-  const token = generateToken(createdUser);
-  const refreshToken = generateRefreshToken(createUser);
+  const tokenData = {
+    id: createdUser.id,
+    email: createdUser.email,
+    iat: Math.floor(Date.now() / 1000),
+  };
+
+  const token = generateToken(tokenData);
+  const refreshToken = generateRefreshToken(tokenData);
 
   response.cookie("access_token", token, cookieOptions);
   response.cookie("refresh_token", refreshToken, cookieLongOptions);

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 // Constants
 import { cookieLongOptions, cookieOptions } from "@root/constants/cookie";
 // Utils
-import { generateToken } from "@root/utils/token.util";
+import { generateRefreshToken, generateToken } from "@root/utils/token.util";
 import { comparePassword } from "@root/utils/hash.util";
 // Repositories
 import { findOneUser } from "@root/repository/auth.repository";
@@ -33,15 +33,17 @@ export const loginController = async (request: Request, response: Response) => {
     return;
   }
 
-  const token = generateToken({
+  const tokenData = {
     id: user.id,
     email: user.email,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  });
+    iat: Math.floor(Date.now() / 1000),
+  };
+
+  const token = generateToken(tokenData);
+  const refreshToken = generateRefreshToken(tokenData);
 
   response.cookie("access_token", token, cookieOptions);
-  response.cookie("refresh_token", token, cookieLongOptions);
+  response.cookie("refresh_token", refreshToken, cookieLongOptions);
 
   response.json({ message: "Logged in" });
 };

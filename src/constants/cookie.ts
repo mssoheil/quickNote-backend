@@ -7,6 +7,7 @@ export const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: "strict",
+  path: "/",
 };
 
 export const cookieLongOptions: CookieOptions = {
@@ -14,4 +15,5 @@ export const cookieLongOptions: CookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: "strict",
+  path: "/",
 };
