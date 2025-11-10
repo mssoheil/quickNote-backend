@@ -54,6 +54,8 @@ app.use(
 
 app.use(express.urlencoded({ extended: false, limit: "1mb" }));
 
+app.set("etag", "strong");
+
 app.use(
   "/api",
   ((router) => {
