@@ -7,6 +7,7 @@ import { rateLimit } from "express-rate-limit";
 import { buildSwaggerSpec } from "./swagger";
 import swaggerUi from "swagger-ui-express";
 import cookieParser from "cookie-parser";
+import { httpLogger } from "@root/middlewares/http-logger.middleware";
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
@@ -55,6 +56,8 @@ app.use(
 app.use(express.urlencoded({ extended: false, limit: "1mb" }));
 
 app.set("etag", "strong");
+
+app.use(httpLogger);
 
 app.use(
   "/api",
