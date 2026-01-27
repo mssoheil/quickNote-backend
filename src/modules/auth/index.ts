@@ -90,6 +90,66 @@ router.post(
  */
 router.post("/login", validateBody(LoginRequestDto), loginController);
 
+/**
+ * @openapi
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *
+ *   schemas:
+ *     MeResponseDto:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           example: "b7b2c2d5-1d9c-4a1b-9c0f-9b4f1b2e3c4d"
+ *         email:
+ *           type: string
+ *           example: "user@example.com"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2026-01-27T06:30:00.000Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2026-01-27T06:30:00.000Z"
+ *       required: [id, email]
+ *
+ * /auth/me:
+ *   get:
+ *     summary: Get current authenticated user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MeResponseDto'
+ *             examples:
+ *               Ok:
+ *                 value:
+ *                   id: "b7b2c2d5-1d9c-4a1b-9c0f-9b4f1b2e3c4d"
+ *                   email: "user@example.com"
+ *                   createdAt: "2026-01-27T06:30:00.000Z"
+ *                   updatedAt: "2026-01-27T06:30:00.000Z"
+ *       401:
+ *         description: Unauthorized (missing/invalid token)
+ *         content:
+ *           application/json:
+ *             examples:
+ *               Unauthorized:
+ *                 value:
+ *                   statusCode: 401
+ *                   path: "/auth/me"
+ *                   message: "Unauthorized"
+ */
 router.get("/me", verifyToken, getWhoAmIController);
 
 export default router;

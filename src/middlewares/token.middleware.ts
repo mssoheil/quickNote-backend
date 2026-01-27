@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 // Configs
 import { envLoader } from "@root/configs";
+
+export interface AccessTokenPayload extends JwtPayload {
+  userId: string;
+}
 
 export function verifyToken(
   request: Request,
@@ -16,8 +20,12 @@ export function verifyToken(
   }
 
   try {
-    const decoded = jwt.verify(token, envLoader.JWT_SECRET);
-    (request as Request & { user: any }).user = decoded;
+    const decoded = jwt.verify(
+      token,
+      envLoader.JWT_SECRET
+    ) as AccessTokenPayload;
+
+    response.locals.userId = decoded.userId;
 
     next();
   } catch (err) {
