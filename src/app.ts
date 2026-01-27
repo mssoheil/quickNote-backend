@@ -3,6 +3,7 @@ import helmet from "helmet";
 import express from "express";
 import { envLoader } from "./configs";
 import authRoutes from "./modules/auth";
+import noteRoutes from "./modules/note";
 import { rateLimit } from "express-rate-limit";
 import { buildSwaggerSpec } from "./swagger";
 import swaggerUi from "swagger-ui-express";
@@ -63,6 +64,14 @@ app.use(
   "/api",
   ((router) => {
     router.use("/auth", authRoutes);
+    return router;
+  })(express.Router())
+);
+
+app.use(
+  "/api",
+  ((router) => {
+    router.use("/note", noteRoutes);
     return router;
   })(express.Router())
 );

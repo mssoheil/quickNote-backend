@@ -1,5 +1,6 @@
-import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+// Types
+import type { NextFunction, Request, Response } from "express";
 // Configs
 import { envLoader } from "@root/configs";
 
@@ -25,7 +26,7 @@ export function verifyToken(
       envLoader.JWT_SECRET
     ) as AccessTokenPayload;
 
-    response.locals.userId = decoded.userId;
+    response.locals.userId = decoded.id;
 
     next();
   } catch (err) {
