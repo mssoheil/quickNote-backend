@@ -21,8 +21,16 @@ const limiter = rateLimit({
 const app = express();
 
 (async () => {
-  const spec = await buildSwaggerSpec();
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
+  const { spec, raw } = await buildSwaggerSpec();
+
+  const openapiHandler: express.RequestHandler = (_req, res) => {
+    res.type("text/yaml");
+    res.send(raw);
+  };
+
+  app.get("/openapi.yaml", openapiHandler);
+
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec, { explorer: true }));
 })();
 
 app.use(
@@ -34,7 +42,8 @@ app.use(
         callback(new Error("Not Allowed origin"));
       }
     },
-  })
+    credentials: true,
+  }),
 );
 
 app.use(cookieParser());
@@ -51,7 +60,7 @@ app.use(
     strict: true,
     inflate: true,
     type: "application/json",
-  })
+  }),
 );
 
 app.use(express.urlencoded({ extended: false, limit: "1mb" }));
@@ -65,7 +74,7 @@ app.use(
   ((router) => {
     router.use("/auth", authRoutes);
     return router;
-  })(express.Router())
+  })(express.Router()),
 );
 
 app.use(
@@ -73,7 +82,7 @@ app.use(
   ((router) => {
     router.use("/note", noteRoutes);
     return router;
-  })(express.Router())
+  })(express.Router()),
 );
 
 export default app;

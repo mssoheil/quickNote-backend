@@ -1,0 +1,350 @@
+openapi: 3.0.3
+info:
+  title: QuickNote API
+  version: 1.0.0
+
+servers:
+  - url: /api
+
+tags:
+  - name: Auth
+    description: Authentication
+  - name: Note
+    description: Notes management
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # ---------- Auth ----------
+    RegisterUserRequestDto:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          example: "user@example.com"
+        password:
+          type: string
+          example: "password"
+
+    LoginRequestDto:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          example: "user@example.com"
+        password:
+          type: string
+          example: "password"
+
+    MeResponseDto:
+      type: object
+      required: [id, email]
+      properties:
+        id:
+          type: string
+          example: "my id"
+        email:
+          type: string
+          example: "user@example.com"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-01-27T06:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-01-27T06:30:00.000Z"
+
+    ErrorDto:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 400
+        path:
+          type: string
+          example: "/auth/login"
+        message:
+          type: string
+          example: "Invalid payload"
+      required: [statusCode, path, message]
+
+    # ---------- Note ----------
+    CreateNoteRequestDto:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+          example: "My Note"
+        content:
+          type: string
+          example: "This is the content of my note."
+
+    UpdateNoteRequestDto:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+          example: "Updated title"
+        content:
+          type: string
+          example: "Updated content"
+
+    NoteDto:
+      type: object
+      required: [id, title, content, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          example: "b7b2c2d5-1d9c-4a1b-9c0f-9b4f1b2e3c4d"
+        title:
+          type: string
+          example: "My Note"
+        content:
+          type: string
+          example: "# Hello"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-01-27T06:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-01-27T06:30:00.000Z"
+
+    NotesListPayloadDto:
+      type: object
+      required: [list, page, limit, hasMore, total]
+      properties:
+        list:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDto"
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 10
+        hasMore:
+          type: boolean
+          example: true
+        total:
+          type: integer
+          example: 42
+
+    NotesListResponseDto:
+      type: object
+      required: [payload]
+      properties:
+        payload:
+          $ref: "#/components/schemas/NotesListPayloadDto"
+
+paths:
+  # ===================== AUTH =====================
+  /auth/register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterUserRequestDto"
+      responses:
+        "201":
+          description: User registered
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+              examples:
+                BadRequest:
+                  value:
+                    statusCode: 400
+                    path: "/auth/register"
+                    message: "Invalid payload"
+
+  /auth/login:
+    post:
+      summary: Login user (sets access_token cookie)
+      operationId: loginUser
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestDto"
+      responses:
+        "200":
+          description: Logged in (cookie set)
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+              examples:
+                BadRequest:
+                  value:
+                    statusCode: 400
+                    path: "/auth/login"
+                    message: "Invalid payload"
+
+  /auth/me:
+    get:
+      summary: Get current authenticated user
+      operationId: getMe
+      tags: [Auth]
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponseDto"
+              examples:
+                Ok:
+                  value:
+                    id: "my id"
+                    email: "user@example.com"
+                    createdAt: "2026-01-27T06:30:00.000Z"
+                    updatedAt: "2026-01-27T06:30:00.000Z"
+        "401":
+          description: Unauthorized (missing/invalid token)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+              examples:
+                Unauthorized:
+                  value:
+                    statusCode: 401
+                    path: "/auth/me"
+                    message: "Unauthorized"
+
+  # ===================== NOTE =====================
+  /note:
+    post:
+      summary: Create note
+      operationId: createNote
+      tags: [Note]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNoteRequestDto"
+      responses:
+        "200":
+          description: Created note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NoteDto"
+        "401":
+          description: Unauthorized
+
+    get:
+      summary: List notes (paginated)
+      operationId: listNotes
+      tags: [Note]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        "200":
+          description: Paginated notes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotesListResponseDto"
+        "401":
+          description: Unauthorized
+
+  /note/{id}:
+    put:
+      summary: Update note
+      operationId: updateNote
+      tags: [Note]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNoteRequestDto"
+      responses:
+        "200":
+          description: Updated note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NoteDto"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not found
+
+    delete:
+      summary: Delete note
+      operationId: deleteNote
+      tags: [Note]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted (no content)
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not found
