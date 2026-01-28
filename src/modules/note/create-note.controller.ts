@@ -6,7 +6,7 @@ import { createNote } from "@root/repository/note.repository";
 
 export const createNoteController = async (
   request: Request,
-  response: Response
+  response: Response,
 ) => {
   const body: CreateNoteRequestDto = request.body ?? {};
   const userId = response.locals.userId;
@@ -19,5 +19,5 @@ export const createNoteController = async (
     },
   });
 
-  response.json({ message: "noteCreated", id: note.id });
+  response.json({ message: "note created", id: note.id });
 };

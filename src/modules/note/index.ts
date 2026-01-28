@@ -1,11 +1,11 @@
 import { Router } from "express";
 // Middlewares
 import { verifyToken } from "@root/middlewares/token.middleware";
-import { validateBody } from "@root/middlewares/validate-body.middleware";
 // Controllers
-// DTOs
 import { createNoteController } from "@root/modules/note/create-note.controller";
 import { findNotesController } from "@root/modules/note/find-notes.controller";
+import { updateNoteController } from "@root/modules/note/update-note.controller";
+import { removeNoteController } from "@root/modules/note/remove-note.controller";
 
 const router = Router();
 
@@ -18,48 +18,30 @@ const router = Router();
  *       required: [title, content]
  *       properties:
  *         title:
+ *           type: string
  *           example: "My Note"
  *         content:
+ *           type: string
  *           example: "This is the content of my note."
  *
- * /note:
- *   post:
- *     summary: Create a new note
- *     tags: [Note]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CreateNoteRequestDto'
- *     responses:
- *       200:
- *         description: Current note
+ *     UpdateNoteRequestDto:
+ *       type: object
+ *       required: [title, content]
+ *       properties:
+ *         title:
+ *           type: string
+ *           example: "Updated title"
  *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/MeResponseDto'
- *             examples:
- *               Ok:
- *                 value:
- *                   id: "my id"
- *                   title: "my title"
- *                   content: "my content"
- *                   createdAt: "2026-01-27T06:30:00.000Z"
- *                   updatedAt: "2026-01-27T06:30:00.000Z"
- */
-router.post("", verifyToken, createNoteController);
-
-/**
- * @openapi
- * components:
- *   schemas:
+ *           type: string
+ *           example: "Updated content"
+ *
  *     NoteDto:
  *       type: object
+ *       required: [id, title, content, createdAt, updatedAt]
  *       properties:
  *         id:
  *           type: string
- *           example: "uuid"
+ *           example: "b7b2c2d5-1d9c-4a1b-9c0f-9b4f1b2e3c4d"
  *         title:
  *           type: string
  *           example: "My Note"
@@ -77,6 +59,7 @@ router.post("", verifyToken, createNoteController);
  *
  *     NotesListPayloadDto:
  *       type: object
+ *       required: [list, page, limit, hasMore, total]
  *       properties:
  *         list:
  *           type: array
@@ -94,18 +77,40 @@ router.post("", verifyToken, createNoteController);
  *         total:
  *           type: integer
  *           example: 42
- *       required: [list, page, limit, hasMore, total]
  *
  *     NotesListResponseDto:
  *       type: object
+ *       required: [payload]
  *       properties:
  *         payload:
  *           $ref: '#/components/schemas/NotesListPayloadDto'
- *       required: [payload]
  *
  * /note:
+ *   post:
+ *     summary: Create a new note
+ *     operationId: createNote
+ *     tags: [Note]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateNoteRequestDto'
+ *     responses:
+ *       200:
+ *         description: Created note
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NoteDto'
+ *       401:
+ *         description: Unauthorized
+ *
  *   get:
  *     summary: List notes (paginated)
+ *     operationId: listNotes
  *     tags: [Note]
  *     security:
  *       - bearerAuth: []
@@ -132,24 +137,65 @@ router.post("", verifyToken, createNoteController);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/NotesListResponseDto'
- *             examples:
- *               Ok:
- *                 value:
- *                   payload:
- *                     list:
- *                       - id: "b7b2c2d5-1d9c-4a1b-9c0f-9b4f1b2e3c4d"
- *                         title: "My Note"
- *                         content: "# Hello"
- *                         createdAt: "2026-01-27T06:30:00.000Z"
- *                         updatedAt: "2026-01-27T06:30:00.000Z"
- *                     page: 1
- *                     limit: 10
- *                     hasMore: true
- *                     total: 42
  *       401:
  *         description: Unauthorized
+ *
+ * /note/{id}:
+ *   put:
+ *     summary: Update a note
+ *     operationId: updateNote
+ *     tags: [Note]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Note ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateNoteRequestDto'
+ *     responses:
+ *       200:
+ *         description: Updated note
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NoteDto'
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Note not found
+ *
+ *   delete:
+ *     summary: Delete a note
+ *     operationId: deleteNote
+ *     tags: [Note]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Note ID
+ *     responses:
+ *       204:
+ *         description: Deleted successfully (no content)
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Note not found
  */
+router.post("", verifyToken, createNoteController);
 router.get("", verifyToken, findNotesController);
-router.get("", verifyToken, findNotesController);
+router.put("/:id", verifyToken, updateNoteController);
+router.delete("/:id", verifyToken, removeNoteController);
 
 export default router;
