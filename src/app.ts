@@ -80,7 +80,7 @@ app.use(
 app.use(
   "/api",
   ((router) => {
-    router.use("/note", noteRoutes);
+    router.use("/notes", noteRoutes);
     return router;
   })(express.Router()),
 );
