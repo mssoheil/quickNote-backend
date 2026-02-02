@@ -6,7 +6,7 @@ import { countNotes, findManyNotes } from "@root/repository/note.repository";
 
 export const findNotesController = async (
   request: Request,
-  response: Response
+  response: Response,
 ) => {
   const userId = response.locals.userId as string;
 
@@ -19,7 +19,7 @@ export const findNotesController = async (
   });
 
   const total = await countNotes({ userId });
-  const hasMore = hasMorePages(page, limit, total);
+  const hasMore = hasMorePages(page - 1, limit, total);
 
   response.json({
     payload: {

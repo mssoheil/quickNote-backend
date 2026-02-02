@@ -1,10 +1,6 @@
 openapi: 3.0.3
 info:
   title: QuickNote API
-  version: 1.0.0
-
-servers:
-  - url: /api
 
 tags:
   - name: Auth
@@ -65,6 +61,14 @@ components:
           type: string
           format: date-time
           example: "2026-01-27T06:30:00.000Z"
+
+    LogoutResponseDto:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          example: "Logged out"
 
     ErrorDto:
       type: object
@@ -184,7 +188,7 @@ paths:
 
   /auth/login:
     post:
-      summary: Login user (sets access_token cookie)
+      summary: Login user
       operationId: loginUser
       tags: [Auth]
       requestBody:
@@ -195,7 +199,7 @@ paths:
               $ref: "#/components/schemas/LoginRequestDto"
       responses:
         "200":
-          description: Logged in (cookie set)
+          description: Logged in
         "400":
           description: Validation error
           content:
@@ -232,7 +236,7 @@ paths:
                     createdAt: "2026-01-27T06:30:00.000Z"
                     updatedAt: "2026-01-27T06:30:00.000Z"
         "401":
-          description: Unauthorized (missing/invalid token)
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -242,6 +246,44 @@ paths:
                   value:
                     statusCode: 401
                     path: "/auth/me"
+                    message: "Unauthorized"
+
+  /auth/logout:
+    post:
+      summary: Logout user
+      operationId: logoutUser
+      tags: [Auth]
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logged out
+          headers:
+            Set-Cookie:
+              description: Clears access_token
+              schema:
+                type: string
+              example: access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogoutResponseDto"
+              examples:
+                Ok:
+                  value:
+                    message: "Logged out"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+              examples:
+                Unauthorized:
+                  value:
+                    statusCode: 401
+                    path: "/auth/logout"
                     message: "Unauthorized"
 
   # ===================== NOTE =====================
@@ -269,7 +311,7 @@ paths:
           description: Unauthorized
 
     get:
-      summary: List notes (paginated)
+      summary: List notes
       operationId: listNotes
       tags: [Note]
       security:
@@ -343,7 +385,7 @@ paths:
             type: string
       responses:
         "204":
-          description: Deleted (no content)
+          description: Deleted
         "401":
           description: Unauthorized
         "404":
