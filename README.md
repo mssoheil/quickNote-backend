@@ -43,9 +43,6 @@ Available at:
 
 http://localhost:3000/docs
 
-yaml
-Copy code
-
 ---
 
 ## ⚙️ Environment Variables
